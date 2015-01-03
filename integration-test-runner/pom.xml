@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>integration-test-runner</artifactId>
+    <name>Integration Test Runner</name>
+    <description>Starts an embedded Tomcat 7 server, then executes all integration tests in this project, and then shutdown Tomcat</description>
+
+    <!-- Setup the parent extension project, which contain all the Alfresco Maven SDK stuff -->
+    <parent>
+        <groupId>com.mycompany.alfresco</groupId>
+        <artifactId>alfresco-maven-test</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <profiles>
+        <profile>
+            <id>enable-it</id>
+
+            <properties>
+                <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+            </properties>
+
+            <dependencies>
+                <!-- Bring in the HTTPClient so we can make HTTP calls during integration testing -->
+                <dependency>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                    <version>4.3.3</version>
+                    <scope>test</scope>
+                </dependency>
+
+                <!-- Unit testing and Integration testing provider -->
+                <dependency>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                    <version>3.8.1</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+
+            <build>
+                <plugins>
+                    <!-- Runs the integration tests, any class that follows naming convention
+                         "**/IT*.java", "**/*IT.java", and "**/*ITCase.java" will be considered an integration test -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>integration-test</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>verify-test</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Copy Alfresco.war web application context file, and substitute properties, so Tomcat can pick it up -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-tomcat-resources</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/contexts</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>../tomcat-runner/tomcat/contexts</directory>
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Run Tomcat 7 embedded with Alfresco.war context -->
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>start-tomcat</id>
+                                <goals>
+                                    <goal>run</goal> <!-- run un-packaged as dynamic webapp -->
+                                </goals>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <fork>true</fork>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>stop-tomcat</id>
+                                <goals>
+                                    <goal>shutdown</goal>
+                                </goals>
+                                <phase>post-integration-test</phase>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <ignorePackaging>true</ignorePackaging>
+                            <useSeparateTomcatClassLoader>true</useSeparateTomcatClassLoader>
+                            <path>/</path>
+                            <webapps>
+                                <webapp>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>alfresco-war</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>war</type>
+                                    <asWebapp>true</asWebapp>
+                                    <contextPath>/alfresco</contextPath>
+                                    <contextFile>${project.build.directory}/contexts/alfresco-webapp-context.xml</contextFile>
+                                </webapp>
+                            </webapps>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This context file is used only for rapid development, it is never released with the webapp -->
+<Context>
+    <!-- Pick up static resource files from .../alfresco-war/target/alfresco, add more stuff here if we got an AMP -->
+    <Resources className="org.apache.naming.resources.VirtualDirContext"
+               extraResourcePaths="/=${project.parent.basedir}/alfresco-war/target/${project.build.finalName}" />
+
+    <!-- Configure where the Alfresco (alfresco.war) web application can load classes and test classes -->
+    <Loader className="org.apache.catalina.loader.VirtualWebappLoader"
+            searchVirtualFirst="true"
+            virtualClasspath="${project.parent.basedir}/component-a-repo-jar/target/classes;${project.parent.basedir}/component-a-repo-jar/target/test-classes" />
+
+    <!-- Load from all directories, not just when a META-INF directory is found in exploded JAR -->
+    <JarScanner scanAllDirectories="true" />
+</Context>
+

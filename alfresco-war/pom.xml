@@ -1,0 +1,127 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>alfresco-war</artifactId>
+    <packaging>war</packaging>
+    <name>Alfresco Maven Test - Alfresco WAR</name>
+    <description>Standard Alfresco WAR with the Component A module JAR applied</description>
+
+    <!-- Setup the parent extension project, which contain all the Alfresco Maven SDK stuff -->
+    <parent>
+        <groupId>com.mycompany.alfresco</groupId>
+        <artifactId>alfresco-maven-test</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <!-- Make sure the generated web application has the name alfresco.war -->
+    <properties>
+        <webapp.name>alfresco</webapp.name>
+    </properties>
+
+    <dependencies>
+        <!-- Include the complete Alfresco.war version that we are extending, so we can use it as a basis
+             for an overlay (i.e. we want to overlay our extensions on top of the standard Alfresco.war -->
+        <dependency>
+            <groupId>${alfresco.groupId}</groupId>
+            <artifactId>alfresco</artifactId>
+            <type>war</type>
+        </dependency>
+
+        <!-- Include all the Customizations for the Alfresco Repository WAR -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>component-a-repo-jar</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- This is an example of how to include the Sharepoint Protocol Support (SPP),
+             you might need this extension if it was selected when you installed Alfresco stand-alone -->
+        <dependency>
+            <groupId>${alfresco.groupId}</groupId>
+            <artifactId>alfresco-spp</artifactId>
+            <version>${alfresco.version}</version>
+            <type>amp</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${webapp.name}</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <overlays>
+                        <!-- Current project customizations from for example /src/main/webapp/WEB-INF.
+                             This is normally empty, since customizations come from the JARs and the AMPs -->
+                        <overlay/>
+                        <!-- First the Original Alfresco WAR -->
+                        <overlay>
+                            <groupId>${alfresco.groupId}</groupId>
+                            <artifactId>alfresco</artifactId>
+                            <type>war</type>
+                            <!-- To allow inclusion of META-INF -->
+                            <excludes/>
+                        </overlay>
+                        <!-- All AMPs go here -->
+                        <overlay>
+                            <groupId>${alfresco.groupId}</groupId>
+                            <artifactId>alfresco-spp</artifactId>
+                            <type>amp</type>
+                        </overlay>
+                        <!-- Note that JAR dependencies are automatically added and does not need to be specified here -->
+                    </overlays>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>run</id>
+            <dependencies>
+                <!-- If we are running Tomcat embedded with the H2 database then bring in the
+                     Alfresco Rapid Application Development (RAD) JAR, which among other things have all
+                     the H2 Database dialect db scripts copied from the PostgreSQL scripts. -->
+                <dependency>
+                    <groupId>org.alfresco.maven</groupId>
+                    <artifactId>alfresco-rad</artifactId>
+                    <version>${maven.alfresco.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>enable-it</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.alfresco.maven</groupId>
+                    <artifactId>alfresco-rad</artifactId>
+                    <version>${maven.alfresco.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+</project>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

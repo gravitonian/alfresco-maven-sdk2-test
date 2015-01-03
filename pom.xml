@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.mycompany.alfresco</groupId>
+    <artifactId>alfresco-maven-test</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>Alfresco Maven Test Parent</name>
+    <description>This is a test project to play around with Alfresco Maven SDK</description>
+    <packaging>pom</packaging>
+
+    <!-- Bring in the Alfresco Maven SDK -->
+    <parent>
+        <groupId>org.alfresco.maven</groupId>
+        <artifactId>alfresco-sdk-parent</artifactId>
+        <version>2.0.0</version>
+    </parent>
+
+    <!-- Bring in all sub-projects that make up our Alfresco extensions, including the projects that build the WARs
+         and the Tomcat runner -->
+    <modules>
+        <module>component-a-repo-jar</module>
+        <module>alfresco-war</module>
+        <module>tomcat-runner</module>
+        <module>integration-test-runner</module>
+    </modules>
+
+    <!-- Overriding some of the SDK property defaults in the SDK parent -->
+    <properties>
+        <alfresco.groupId>org.alfresco</alfresco.groupId>
+        <alfresco.version>5.0.c</alfresco.version>
+        <app.log.root.level>WARN</app.log.root.level>
+        <alfresco.data.location>alf_data_dev</alfresco.data.location>
+        <env>local</env>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Setup what versions of the different Alfresco artifacts that will be used (depends on alfresco.version),
+                 so we don't have to specify version in any of the sub-projects -->
+            <dependency>
+                <groupId>${alfresco.groupId}</groupId>
+                <artifactId>alfresco-platform-distribution</artifactId>
+                <version>${alfresco.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

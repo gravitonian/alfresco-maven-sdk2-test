@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Hello World</shortname>
+    <description>Hello World demo web script</description>
+    <url>/ecmstuff/helloworld</url>
+    <format default="html">argument</format>
+    <family>ECM Stuff Blog</family>
+</webscript>
