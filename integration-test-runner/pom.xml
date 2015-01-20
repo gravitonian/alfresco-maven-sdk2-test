@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>integration-test-runner</artifactId>
-    <name>Integration Test Runner</name>
+    <name>Alfresco Maven Test - Integration Test Runner</name>
     <description>Starts an embedded Tomcat 7 server, then executes all integration tests in this project, and then shutdown Tomcat</description>
 
     <!-- Setup the parent extension project, which contain all the Alfresco Maven SDK stuff -->
@@ -15,6 +15,27 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
+    <dependencies>
+        <!-- Bring in the HTTPClient so we can make HTTP calls during integration testing -->
+        <!-- Note. we don't want this in the enable-it profile as then the tests would not compile when doing
+                   your standard $mvn clean install -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Unit testing and Integration testing provider, automatically included by SDK,,
+            alfresco-parent-5.0.c.pom has dependencyManagement definition and version
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        -->
+    </dependencies>
+
     <profiles>
         <profile>
             <id>enable-it</id>
@@ -23,24 +44,6 @@
                 <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
             </properties>
 
-            <dependencies>
-                <!-- Bring in the HTTPClient so we can make HTTP calls during integration testing -->
-                <dependency>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpclient</artifactId>
-                    <version>4.3.3</version>
-                    <scope>test</scope>
-                </dependency>
-
-                <!-- Unit testing and Integration testing provider -->
-                <dependency>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                    <version>3.8.1</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-
             <build>
                 <plugins>
                     <!-- Runs the integration tests, any class that follows naming convention
@@ -48,6 +51,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>2.18.1</version>
                         <executions>
                             <execution>
                                 <id>integration-test</id>
@@ -64,9 +68,17 @@
                                 </goals>
                             </execution>
                         </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.maven.surefire</groupId>
+                                <artifactId>surefire-junit47</artifactId>
+                                <version>2.18.1</version>
+                            </dependency>
+                        </dependencies>
                     </plugin>
 
-                    <!-- Copy Alfresco.war web application context file, and substitute properties, so Tomcat can pick it up -->
+                    <!-- Copy Alfresco.war web application context file, and substitute properties, so Tomcat can pick it up,
+                         plugin version picked up from alfresco-sdk-parent-2.0.0.pom pluginManagement definition -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-resources-plugin</artifactId>
@@ -90,7 +102,9 @@
                         </executions>
                     </plugin>
 
-                    <!-- Run Tomcat 7 embedded with Alfresco.war context -->
+                    <!-- Run Tomcat 7 embedded with Alfresco.war context,
+                         plugin version picked up from alfresco-sdk-parent.pom pluginManagement definition,
+                         which also brings in the H2 database lib -->
                     <plugin>
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
@@ -102,7 +116,7 @@
                                 </goals>
                                 <phase>pre-integration-test</phase>
                                 <configuration>
-                                    <fork>true</fork>
+                                    <fork>true</fork>   <!-- Fork so tests can be run in parallel -->
                                 </configuration>
                             </execution>
                             <execution>

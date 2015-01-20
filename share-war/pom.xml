@@ -1,0 +1,92 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>share-war</artifactId>
+    <packaging>war</packaging>
+    <name>Alfresco Maven Test - Share WAR</name>
+    <description>Standard Share WAR with the Component A Share JAR extension applied</description>
+
+    <!-- Setup the parent extension project, which contain all the Alfresco Maven SDK stuff -->
+    <parent>
+        <groupId>com.mycompany.alfresco</groupId>
+        <artifactId>alfresco-maven-test</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <!-- Make sure the generated web application has the name share.war -->
+    <properties>
+        <webapp.name>share</webapp.name>
+    </properties>
+
+    <dependencies>
+        <!-- Include the complete Share.war version that we are extending, so we can use it as a basis
+             for an overlay (i.e. we want to overlay our extensions on top of the standard Share.war -->
+        <dependency>
+            <groupId>${alfresco.groupId}</groupId>
+            <artifactId>${alfresco.share.artifactId}</artifactId>
+            <version>${alfresco.version}</version>
+            <type>war</type>
+        </dependency>
+
+        <!-- Include all the Customizations for the Alfresco Share WAR -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>component-a-share-jar</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>${webapp.name}</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <overlays>
+                        <!-- Current project customizations from for example /src/main/webapp/WEB-INF.
+                             This is normally empty, since customizations come from the JARs and the AMPs -->
+                        <overlay/>
+                        <!-- First the Original Share WAR -->
+                        <overlay>
+                            <groupId>${alfresco.groupId}</groupId>
+                            <artifactId>${alfresco.share.artifactId}</artifactId>
+                            <type>war</type>
+                            <!-- To allow inclusion of META-INF -->
+                            <excludes/>
+                        </overlay>
+                        <!--
+                                All AMPs go here
+                          -->
+
+                        <!-- Note that JAR dependencies are automatically added and does not need to be specified here -->
+                    </overlays>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

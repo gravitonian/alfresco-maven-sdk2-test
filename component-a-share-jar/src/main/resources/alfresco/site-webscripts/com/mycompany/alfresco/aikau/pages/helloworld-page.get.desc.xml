@@ -1,0 +1,6 @@
+<webscript>
+    <shortname>Hello World Aikau Page</shortname>
+    <description>Hello World Aikau page definition</description>
+    <family>Share</family>
+    <url>/ecmstuff/helloworld-page</url>
+</webscript>

@@ -4,7 +4,7 @@
     <groupId>com.mycompany.alfresco</groupId>
     <artifactId>component-a-repo-jar</artifactId>
     <packaging>jar</packaging>
-    <name>Alfresco Maven Test - Component A JAR</name>
+    <name>Alfresco Maven Test - Component A Repo JAR</name>
     <description>This is a sample Alfresco Repo JAR extension called Component A</description>
 
     <!-- Setup the parent extension project, which contain all the Alfresco Maven SDK stuff -->
@@ -15,19 +15,25 @@
     </parent>
 
     <dependencies>
-        <!-- Bring in the Spring Surf framework so we can compile the Web Script's Java controller -->
+        <!-- Bring in the Spring Surf framework so we can compile the Web Script's Java controller,
+             alfresco-platform-distribution-5.0.c.pom has dependencyManagement definition with version  -->
         <dependency>
             <groupId>org.springframework.extensions.surf</groupId>
             <artifactId>spring-surf</artifactId>
             <scope>provided</scope>
         </dependency>
 
-        <!-- Unit testing and Integration testing provider -->
+        <!-- Unit testing, alfresco-parent-5.0.c.pom has dependencyManagement definition with    version
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
             <scope>test</scope>
+        </dependency> -->
+
+        <!-- Mock objects during Unit testing, alfresco-parent-5.0.c.pom has dependencyManagement definition with version -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -1,0 +1,6 @@
+<webscript>
+    <shortname>Hello World Aikau Dashlet</shortname>
+    <description>Hello World Aikau Dashlet definition</description>
+    <family>dashlet</family>
+    <url>/ecmstuff/helloworld-dashlet</url>
+</webscript>

@@ -7,17 +7,19 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.junit.Test;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Integration Test (IT) for Hello World web script.
  *
- * @author http://ecmstuff.blogspot.co.uk/
+ * @author martin.bergljung@marversolutions.com
  * @version 1.0
  */
 public class HelloWorldWebScriptIT {
+    @Test
     public void testWebScriptCall() throws Exception {
         String webscriptURL = "http://localhost:8080/alfresco/service/ecmstuff/helloworld";
         String expectedResponse = "Hello World";

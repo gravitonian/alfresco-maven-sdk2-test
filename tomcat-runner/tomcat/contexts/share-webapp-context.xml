@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ===================================================================================================================
+    This context file is used only in a development IDE for rapid development,
+    it is never released with the Share.war
+    =================================================================================================================-->
+
+<Context>
+    <!-- Pick up static resource files from any Share extensions, being it a JAR or an AMP
+         (this should not include docBase) -->
+    <Resources className="org.apache.naming.resources.VirtualDirContext"
+               extraResourcePaths="/res=${project.parent.basedir}/component-a-share-jar/target/classes/META-INF" />
+
+    <!-- Configure where the Share (share.war) web application can load classes and test classes -->
+    <Loader className="org.apache.catalina.loader.VirtualWebappLoader"
+            searchVirtualFirst="true"
+            virtualClasspath="${project.parent.basedir}/component-a-share-jar/target/classes;${project.parent.basedir}/component-a-share-jar/target/test-classes" />
+
+    <!-- Load from all directories, not just when the META-INF directory is found in exploded JAR -->
+    <JarScanner scanAllDirectories="true" />
+</Context>
