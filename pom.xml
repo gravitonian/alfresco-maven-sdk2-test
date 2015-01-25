@@ -39,6 +39,7 @@
         <module>component-a-share-jar</module>
         <module>alfresco-war</module>
         <module>share-war</module>
+        <module>solr-config</module>
         <module>tomcat-runner</module>
         <module>integration-test-runner</module>
     </modules>

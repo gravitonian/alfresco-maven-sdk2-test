@@ -51,28 +51,52 @@
         <plugins>
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <overlays>
-                        <!-- Current project customizations from for example /src/main/webapp/WEB-INF.
-                             This is normally empty, since customizations come from the JARs and the AMPs -->
-                        <overlay/>
-                        <!-- First the Original Alfresco WAR -->
-                        <overlay>
-                            <groupId>${alfresco.groupId}</groupId>
-                            <artifactId>${alfresco.repo.artifactId}</artifactId>
-                            <type>war</type>
-                            <!-- To allow inclusion of META-INF -->
-                            <excludes/>
-                        </overlay>
-                        <!-- All AMPs go here -->
-                        <overlay>
-                            <groupId>${alfresco.groupId}</groupId>
-                            <artifactId>alfresco-spp</artifactId>
-                            <type>amp</type>
-                        </overlay>
-                        <!-- Note that JAR dependencies are automatically added and does not need to be specified here -->
-                    </overlays>
-                </configuration>
+                <executions>
+                    <!-- Explode war so we can replace stuff in web.xml if run profile is enabled -->
+                    <execution>
+                        <id>prepare-war</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>exploded</goal>
+                        </goals>
+                    </execution>
+                    <!-- Package alfresco.war with any changes and overlays -->
+                    <execution>
+                        <id>default-war</id>  <!-- Use default-war as id so we don't get duplicate packaging going on -->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>war</goal>
+                        </goals>
+                        <configuration>
+                            <overlays>
+                                <!-- Current project customizations from for example /src/main/webapp/WEB-INF.
+                                     This is normally empty, since customizations come from the JARs and the AMPs -->
+                                <overlay>
+                                    <!-- empty groupId/artifactId represents the current build -->
+                                </overlay>
+                                <!-- First the Original Alfresco WAR -->
+                                <overlay>
+                                    <groupId>${alfresco.groupId}</groupId>
+                                    <artifactId>${alfresco.repo.artifactId}</artifactId>
+                                    <type>war</type>
+                                    <!-- To allow inclusion of META-INF -->
+                                    <excludes>
+                                        <!-- web.xml has been updated after original alfresco.war was exploded so skip it -->
+                                        <exclude>WEB-INF/web.xml</exclude>
+                                    </excludes>
+                                </overlay>
+                                <!-- Then all AMPs -->
+                                <overlay>
+                                    <groupId>${alfresco.groupId}</groupId>
+                                    <artifactId>alfresco-spp</artifactId>
+                                    <type>amp</type>
+                                </overlay>
+                                <!-- Note that JAR dependencies are automatically added and does not
+                                     need to be specified here, unless you need them applied in a specific order -->
+                            </overlays>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -90,6 +114,43 @@
                     <version>${maven.alfresco.version}</version>
                 </dependency>
             </dependencies>
+
+            <build>
+                <plugins>
+                    <!-- Run the goal replace and update the web.xml where applicable,
+                         commenting out the security-constraints so we can run with
+                         HTTP when talking to Solr -->
+                    <plugin>
+                        <groupId>com.google.code.maven-replacer-plugin</groupId>
+                        <artifactId>replacer</artifactId>
+                        <executions>
+                            <execution>
+                                <id>comment-out-securecomms</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>replace</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <regex>false</regex>
+                            <includes>
+                                <include>${project.basedir}/target/alfresco/WEB-INF/web.xml</include>
+                            </includes>
+                            <replacements>
+                                <replacement>
+                                    <token><![CDATA[<!-- Toggle securecomms placeholder start -->]]></token>
+                                    <value><![CDATA[<!--]]></value>
+                                </replacement>
+                                <replacement>
+                                    <token><![CDATA[<!-- Toggle securecomms placeholder end -->]]></token>
+                                    <value><![CDATA[-->]]></value>
+                                </replacement>
+                            </replacements>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <profile>
             <id>enable-it</id>

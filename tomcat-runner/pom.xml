@@ -19,6 +19,12 @@
         <profile>
             <id>run</id>
 
+            <properties>
+                <alfresco.solr.dir>${project.parent.basedir}/${alfresco.data.location}/solr4</alfresco.solr.dir>
+                <alfresco.solr.home.dir>${alfresco.solr.dir}/config</alfresco.solr.home.dir>
+                <alfresco.solr.data.dir>${alfresco.solr.dir}/data</alfresco.solr.data.dir>
+            </properties>
+
             <build>
                 <plugins>
                     <!-- Copy alfresco.war and share.war web application context files, and substitute properties,
@@ -66,6 +72,9 @@
                             <ignorePackaging>true</ignorePackaging>
                             <useSeparateTomcatClassLoader>true</useSeparateTomcatClassLoader>    <!-- Make sure Catalina classes are picked up when we got virtual webapp contexts with classpaths -->
                             <path>/</path>
+                            <systemProperties>
+                                <solr.solr.home>${alfresco.solr.home.dir}</solr.solr.home>
+                            </systemProperties>
                             <webapps>
                                 <webapp>
                                     <groupId>${project.groupId}</groupId>
@@ -85,8 +94,26 @@
                                     <contextPath>/share</contextPath>
                                     <contextFile>${project.build.directory}/contexts/share-webapp-context.xml</contextFile>
                                 </webapp>
+                                <webapp>
+                                    <groupId>${alfresco.groupId}</groupId>
+                                    <artifactId>alfresco-solr4</artifactId>
+                                    <version>${alfresco.version}</version>
+                                    <type>war</type>
+                                    <asWebapp>true</asWebapp>
+                                    <contextPath>/solr4</contextPath>
+                                    <contextFile>${alfresco.solr.home.dir}/context.xml</contextFile>
+                                </webapp>
                             </webapps>
                         </configuration>
+                        <dependencies>
+                            <!-- Upgrade from default version used by tomcat plugin, which is 10.0.1,
+                                 to Guava version 14.0.1 that is used by Solr 4 -->
+                            <dependency>
+                                <groupId>com.google.guava</groupId>
+                                <artifactId>guava</artifactId>
+                                <version>14.0.1</version>
+                            </dependency>
+                        </dependencies>
                     </plugin>
                 </plugins>
             </build>
