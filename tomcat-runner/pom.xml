@@ -70,18 +70,26 @@
                         </executions>
                         <configuration>
                             <ignorePackaging>true</ignorePackaging>
-                            <useSeparateTomcatClassLoader>true</useSeparateTomcatClassLoader>    <!-- Make sure Catalina classes are picked up when we got virtual webapp contexts with classpaths -->
+                            <!-- Make sure Catalina classes are picked up when we got virtual webapp contexts with classpaths -->
+                            <useSeparateTomcatClassLoader>true</useSeparateTomcatClassLoader>
                             <path>/</path>
                             <systemProperties>
                                 <solr.solr.home>${alfresco.solr.home.dir}</solr.solr.home>
                             </systemProperties>
+                            <!-- Prevent classloader delegation, each webapp loads.
+                                 If set to true then you will get a truckload of Solr logging as
+                                 the alf_data_dev/solr4/config/log4j-solr.properties file is not picked up.
+                                 This also fixes issues with the Google Guava Library, which this tomcat plugin uses
+                                 version 10.0.1 of but Solr uses 14.0.1 -->
+                            <delegate>false</delegate>
                             <webapps>
                                 <webapp>
                                     <groupId>${project.groupId}</groupId>
                                     <artifactId>alfresco-war</artifactId>
                                     <version>${project.version}</version>
                                     <type>war</type>
-                                    <asWebapp>true</asWebapp>                                    <!-- Make sure webapp is loaded as webapp and not as just context -->
+                                    <!-- Make sure webapp is loaded as webapp and not as just context -->
+                                    <asWebapp>true</asWebapp>
                                     <contextPath>/alfresco</contextPath>
                                     <contextFile>${project.build.directory}/contexts/alfresco-webapp-context.xml</contextFile>
                                 </webapp>
@@ -105,15 +113,6 @@
                                 </webapp>
                             </webapps>
                         </configuration>
-                        <dependencies>
-                            <!-- Upgrade from default version used by tomcat plugin, which is 10.0.1,
-                                 to Guava version 14.0.1 that is used by Solr 4 -->
-                            <dependency>
-                                <groupId>com.google.guava</groupId>
-                                <artifactId>guava</artifactId>
-                                <version>14.0.1</version>
-                            </dependency>
-                        </dependencies>
                     </plugin>
                 </plugins>
             </build>
