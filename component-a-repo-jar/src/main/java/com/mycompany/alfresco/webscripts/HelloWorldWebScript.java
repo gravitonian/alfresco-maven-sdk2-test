@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author http://ecmstuff.blogspot.co.uk/
+ * @author martin.bergljung@marversolutions.com
  * @version 1.0
  */
 public class HelloWorldWebScript extends DeclarativeWebScript {

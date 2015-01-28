@@ -25,15 +25,6 @@
             <version>4.3.3</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- Unit testing and Integration testing provider, automatically included by SDK,,
-            alfresco-parent-5.0.c.pom has dependencyManagement definition and version
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        -->
     </dependencies>
 
     <profiles>
@@ -131,6 +122,8 @@
                             <ignorePackaging>true</ignorePackaging>
                             <useSeparateTomcatClassLoader>true</useSeparateTomcatClassLoader>
                             <path>/</path>
+                            <!-- Note. If you have integration tests that require Share or Solr then you would have
+                                       to add those webapps too, see the tomcat-runner project for info on how to do that. -->
                             <webapps>
                                 <webapp>
                                     <groupId>${project.groupId}</groupId>

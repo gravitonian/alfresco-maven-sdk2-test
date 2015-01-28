@@ -41,7 +41,7 @@
             <build>
                 <plugins>
                     <!-- Run goal unpack and unzip the content of the downloaded default solr-config.zip file into the
-                         alfresco-maven-sdk2-test/alf_data_dev/solr_home directory
+                         alfresco-maven-sdk2-test/alf_data_dev/solr4/config directory
                          (The solr-config.zip is brought in via the dependency section) -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -69,8 +69,8 @@
                         </executions>
                     </plugin>
 
-                    <!-- Run the goal replace and update the web.xml where applicable,
-                         commenting out the security-constraints so we can run with HTTP -->
+                    <!-- Run the goal replace and update configuration files for the
+                         Solr cores to reflect our build structure -->
                     <plugin>
                         <groupId>com.google.code.maven-replacer-plugin</groupId>
                         <artifactId>replacer</artifactId>

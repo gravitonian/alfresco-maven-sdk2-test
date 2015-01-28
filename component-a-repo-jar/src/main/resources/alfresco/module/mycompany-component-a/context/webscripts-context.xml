@@ -6,5 +6,4 @@
     <bean id="webscript.com.mycompany.hello-world.get"
           class="com.mycompany.alfresco.webscripts.HelloWorldWebScript" parent="webscript">
     </bean>
-
 </beans>

@@ -23,13 +23,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Unit testing, alfresco-parent-5.0.c.pom has dependencyManagement definition with    version
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency> -->
-
         <!-- Mock objects during Unit testing, alfresco-parent-5.0.c.pom has dependencyManagement definition with version -->
         <dependency>
             <groupId>org.mockito</groupId>
